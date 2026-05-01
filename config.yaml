@@ -1,0 +1,639 @@
+# ==============================================================================
+# GLOBAL STUDY CONFIGURATION: MOTIF-BASED RISK DECOMPOSITION FRAMEWORK
+# ==============================================================================
+# Source:  "A Motif-Based Framework for Decomposing Risk Spillovers"
+#          Ying-Hui Shao, Yan-Hong Yang, Yun Zhang  (arXiv:2604.25406, 2026-04-28)
+# Package: CS Chirinda
+# Note:    Parameters annotated "# unspecified in manuscript" are implementation
+#          defaults introduced by the package author to render the pipeline
+#          deterministic and reproducible; they are NOT sourced from the paper text.
+# ==============================================================================
+
+study_config:
+
+  # ----------------------------------------------------------------------------
+  # RAW INPUT DATA ARCHITECTURE
+  # ----------------------------------------------------------------------------
+  raw_input_data:
+
+    metadata:
+      study_title: "A Motif-Based Framework for Decomposing Risk Spillovers"
+      start_date: "2010-04-16"
+      end_date: "2025-09-05"
+      n_assets: 39
+      data_source: "Investing.com"
+      calendar_alignment: "common_business_days"
+      missing_date_policy: "drop_any_date_missing_any_asset"
+      duplicate_date_policy: "raise_error"                    # unspecified in manuscript
+      raw_price_field: "daily_close_or_settlement"            # unspecified in manuscript
+      continuous_futures_rule: "vendor_continuous_contract"   # unspecified in manuscript
+      rollover_rule: "vendor_default_roll"                    # unspecified in manuscript
+      currency_adjustment: "none"                             # unspecified in manuscript
+      return_unit: "decimal"
+      return_scaling_for_estimation: "none"
+      return_scaling_for_display: "mean_reported_times_1e3"
+
+    schema_long:
+      date: "datetime64[ns]"
+      ticker: "category"
+      asset_class: "category"
+      sector: "category"
+      four_class_sector: "category"
+      log_returns: "float64"
+      price_source_flag: "category"
+      is_common_business_day: "bool"
+
+    wide_matrix_construction:
+      input_dataframe: "df_raw"
+      index: "date"
+      columns: "ticker"
+      values: "log_returns"
+      required_shape_per_date: 39
+      ticker_order_locked: true
+      ticker_order:
+        - "WTI"
+        - "NGS"
+        - "HOL"
+        - "GAL"
+        - "COL"
+        - "CRN"
+        - "WHT"
+        - "SBN"
+        - "RIC"
+        - "OAT"
+        - "SBM"
+        - "SBO"
+        - "SGR"
+        - "COF"
+        - "CCA"
+        - "CTN"
+        - "OJC"
+        - "LUM"
+        - "LCT"
+        - "FCT"
+        - "HOG"
+        - "MLK"
+        - "GLD"
+        - "SLV"
+        - "PLD"
+        - "PLT"
+        - "ALM"
+        - "CPR"
+        - "ZNC"
+        - "LED"
+        - "NKL"
+        - "TIN"
+        - "SPX"
+        - "ESX"
+        - "UKX"
+        - "NKI"
+        - "ASX"
+        - "IBV"
+        - "CSI"
+
+    sector_taxonomy_7_class:
+      Energy:
+        - "WTI"
+        - "NGS"
+        - "HOL"
+        - "GAL"
+        - "COL"
+      Grains_Oilseeds:
+        - "CRN"
+        - "WHT"
+        - "SBN"
+        - "RIC"
+        - "OAT"
+        - "SBM"
+        - "SBO"
+      Softs:
+        - "SGR"
+        - "COF"
+        - "CCA"
+        - "CTN"
+        - "OJC"
+        - "LUM"
+      Livestock:
+        - "LCT"
+        - "FCT"
+        - "HOG"
+        - "MLK"
+      Precious_Metals:
+        - "GLD"
+        - "SLV"
+        - "PLD"
+        - "PLT"
+      Industrial_Metals:
+        - "ALM"
+        - "CPR"
+        - "ZNC"
+        - "LED"
+        - "NKL"
+        - "TIN"
+      Equity:
+        - "SPX"
+        - "ESX"
+        - "UKX"
+        - "NKI"
+        - "ASX"
+        - "IBV"
+        - "CSI"
+
+    sector_taxonomy_4_class:
+      Energy:
+        - "WTI"
+        - "NGS"
+        - "HOL"
+        - "GAL"
+        - "COL"
+      Agriculture:
+        - "CRN"
+        - "WHT"
+        - "SBN"
+        - "RIC"
+        - "OAT"
+        - "SBM"
+        - "SBO"
+        - "SGR"
+        - "COF"
+        - "CCA"
+        - "CTN"
+        - "OJC"
+        - "LUM"
+        - "LCT"
+        - "FCT"
+        - "HOG"
+        - "MLK"
+      Metals:
+        - "GLD"
+        - "SLV"
+        - "PLD"
+        - "PLT"
+        - "ALM"
+        - "CPR"
+        - "ZNC"
+        - "LED"
+        - "NKL"
+        - "TIN"
+      Equity:
+        - "SPX"
+        - "ESX"
+        - "UKX"
+        - "NKI"
+        - "ASX"
+        - "IBV"
+        - "CSI"
+
+    sector_taxonomy_2_class:
+      Commodity:
+        - "WTI"
+        - "NGS"
+        - "HOL"
+        - "GAL"
+        - "COL"
+        - "CRN"
+        - "WHT"
+        - "SBN"
+        - "RIC"
+        - "OAT"
+        - "SBM"
+        - "SBO"
+        - "SGR"
+        - "COF"
+        - "CCA"
+        - "CTN"
+        - "OJC"
+        - "LUM"
+        - "LCT"
+        - "FCT"
+        - "HOG"
+        - "MLK"
+        - "GLD"
+        - "SLV"
+        - "PLD"
+        - "PLT"
+        - "ALM"
+        - "CPR"
+        - "ZNC"
+        - "LED"
+        - "NKL"
+        - "TIN"
+      Equity:
+        - "SPX"
+        - "ESX"
+        - "UKX"
+        - "NKI"
+        - "ASX"
+        - "IBV"
+        - "CSI"
+
+  # ----------------------------------------------------------------------------
+  # PRE-PROCESSING AND DIAGNOSTICS
+  # ----------------------------------------------------------------------------
+  pre_processing:
+    return_formula: "log(P_t) - log(P_t_minus_1)"
+    use_log_returns_not_standardized_z_scores: true
+    stationarity_test: "Augmented Dickey-Fuller"
+    adf_null: "unit_root"
+    adf_deterministic_terms: "constant"          # unspecified in manuscript
+    adf_lag_selection: "AIC"                     # unspecified in manuscript
+    adf_max_lags: "Schwert_rule"                 # unspecified in manuscript
+    normality_test: "Jarque-Bera"
+    jb_null: "normality"
+    diagnostic_significance_level: 0.01
+    diagnostics_run_on: "aligned_log_returns"
+    descriptive_statistics:
+      - "mean"
+      - "standard_deviation"
+      - "skewness"
+      - "excess_kurtosis"
+      - "Jarque_Bera"
+      - "ADF"
+
+  # ----------------------------------------------------------------------------
+  # ECONOMETRIC MODEL CONFIGURATION
+  # ----------------------------------------------------------------------------
+  econometric_model:
+    specification: "p_order_Quantile_Vector_Autoregression"
+    main_conditional_quantiles:
+      - 0.05
+      - 0.50
+      - 0.95
+    extended_quantile_grid_for_figure_4:
+      - 0.05
+      - 0.15
+      - 0.25
+      - 0.35
+      - 0.50
+      - 0.65
+      - 0.75
+      - 0.85
+      - 0.95
+    forecast_horizon_H: 10
+    rolling_window_width_main: 200
+    rolling_window_width_robustness: 250
+    lag_order_rule: "BIC_over_candidate_lags"                                           # unspecified in manuscript
+    candidate_lags:                                                                      # unspecified in manuscript
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+    lag_order_application: "fixed_global_lag_selected_before_rolling_estimation"        # unspecified in manuscript
+    fallback_lag_order_if_information_criteria_tie: 1                                   # unspecified in manuscript
+    estimation_window_type: "rolling_overlapping_windows"
+    qvar_intercept: true
+    innovation_covariance_estimator: "sample_covariance_of_qvar_residuals"             # unspecified in manuscript
+
+    wold_representation:
+      Psi_0: "identity_matrix"
+      max_horizon: 10
+      recursive_substitution_from_QVAR_coefficients: true
+
+  # ----------------------------------------------------------------------------
+  # CONNECTEDNESS CONVENTIONS
+  # ----------------------------------------------------------------------------
+  connectedness_framework:
+    variance_decomposition: "Generalized_Forecast_Error_Variance_Decomposition"
+    joint_framework: "Extended_Joint_Connectedness"
+    normalization: "R2_grounded_goodness_of_fit"
+    selection_matrix_M_i: "identity_matrix_with_i_th_column_removed"
+    scaling_factor_lambda: "S_jnt_from_divided_by_S_gen_from"
+    edge_orientation: "column_transmitter_to_row_receiver"
+    matrix_entry_convention: "CT_ij_is_spillover_from_j_to_i"
+    diagonal_treatment_for_gfevd: "retain_own_share_during_FEVD"
+    diagonal_treatment_for_directional_spillovers: "exclude_i_equals_j"
+    diagonal_treatment_for_network_edges: "remove_self_loops"
+    connectedness_outputs:
+      - "gSOV"
+      - "gSOT"
+      - "S_jnt_from"
+      - "lambda_i"
+      - "jSOT"
+      - "TO"
+      - "FROM"
+      - "NET"
+      - "NPDC"
+      - "TCI"
+
+  # ----------------------------------------------------------------------------
+  # DECOMPOSED, PARTIAL, AND AGGREGATE CONNECTEDNESS
+  # ----------------------------------------------------------------------------
+  connectedness_decompositions:
+    types:
+      - "Internal"
+      - "External"
+      - "Inclusive"
+      - "Exclusive"
+      - "Aggregate"
+    internal_definition: "source_and_receiver_in_same_7_class_sector"
+    external_definition: "source_and_receiver_in_different_7_class_sectors"
+    inclusive_definition: "equity_commodity_cross_group_connectedness"
+    exclusive_definition: "commodity_only_connectedness_excluding_equity_nodes"
+    aggregate_definition: "sector_level_connectedness_after_collapsing_asset_nodes"
+    sector_aggregation_rule: "sum_pairwise_connectedness_then_normalize_by_sector_system_size"  # unspecified in manuscript
+    group_size_adjustment: true                                                                  # unspecified in manuscript
+
+  # ----------------------------------------------------------------------------
+  # NETWORK ARCHITECTURE CONVENTIONS
+  # ----------------------------------------------------------------------------
+  network_architecture:
+    node_definition: "futures_contract"
+    n_nodes: 39
+    directed_edges: true
+    weighted_edges: true
+    self_loops_allowed: false
+    dense_network_input: "CT_t_tau"
+    edge_weight: "jSOT_ij"
+    edge_direction: "j_to_i_when_CT_ij_is_positive"
+    node_attributes:
+      - "ticker"
+      - "asset_class"
+      - "sector"
+      - "four_class_sector"
+      - "TO"
+      - "FROM"
+      - "NET"
+      - "positional_diversity"
+
+    npdc_network:
+      definition: "net_pairwise_directional_connectedness"
+      edge_weight: "S_ij_jnt_net"
+      positive_value_interpretation: "market_i_dominates_market_j"
+
+  # ----------------------------------------------------------------------------
+  # TOPOLOGICAL SPARSIFICATION
+  # ----------------------------------------------------------------------------
+  topological_backbone:
+    algorithm: "Disparity_Filter"
+    reference: "Serrano_et_al_2009"
+    perspective_logic: "dual_perspective_source_and_target"
+    input_matrix: "CT_t_tau"
+    input_weight: "jSOT_ij"
+    remove_diagonal_before_filtering: true
+    significance_thresholds:
+      MSP1: 0.05
+      MSP2: 0.10
+    decision_rule: "min(alpha_out, alpha_in) < alpha"
+    retain_original_edge_weight_if_significant: true
+    set_non_significant_edges_to_zero: true
+    integral_evaluation: "closed_form_when_possible"                                                   # unspecified in manuscript
+    handle_zero_strength_node: "drop_all_incident_edges_from_significance_testing"                    # unspecified in manuscript
+    handle_degree_zero_or_one: "retain_only_if_formula_well_defined_else_not_significant"             # unspecified in manuscript
+    motif_graph_after_backbone: "binary_adjacency_A_ij_greater_than_zero"                            # unspecified in manuscript
+    weighted_backbone_retained_for_visualization: true
+
+  # ----------------------------------------------------------------------------
+  # THRESHOLD NETWORK BENCHMARK
+  # ----------------------------------------------------------------------------
+  threshold_network_benchmark:
+    use_for_comparison_only: true
+    cutoff: 0.10
+    decision_rule: "retain_edge_if_weight_greater_than_cutoff"
+    input_matrix: "CT_t_tau"
+    purpose: "contrast_global_thresholding_against_disparity_filter"
+
+  # ----------------------------------------------------------------------------
+  # DIRECTED TRIADIC MOTIF ANALYSIS
+  # ----------------------------------------------------------------------------
+  motif_analysis:
+    node_count: 3
+    n_non_isomorphic_directed_motifs: 13
+    n_unique_orbits: 30
+    numbering_scheme: "Milo_et_al_2002"
+    motif_ids_discussed:
+      - 6
+      - 12
+      - 14
+      - 36
+      - 38
+      - 46
+      - 74
+      - 78
+      - 98
+      - 102
+      - 108
+      - 110
+      - 238
+    input_graph: "binary_backbone_adjacency"
+    reciprocal_edge_representation: "two_opposite_directed_edges"
+    self_loops_allowed: false
+    multi_edges_allowed: false
+
+    statistical_testing:
+      null_model: "directed_degree_preserving_randomization"
+      preserve_in_degree_sequence: true
+      preserve_out_degree_sequence: true
+      preserve_reciprocal_dyad_count: false                                                      # unspecified in manuscript
+      randomization_method: "directed_edge_swap"                                                 # unspecified in manuscript
+      edge_swaps_per_random_network: "10_times_number_of_edges"                                  # unspecified in manuscript
+      burn_in_swaps: "10_times_number_of_edges"                                                  # unspecified in manuscript
+      iterations_R: 1000                                                                         # unspecified in manuscript
+      random_seed: 12345                                                                         # unspecified in manuscript
+      z_score_formula: "(observed_mean_minus_random_mean) / random_standard_deviation"
+      zero_random_std_policy: "set_z_to_nan_and_flag"                                            # unspecified in manuscript
+      daily_or_aggregate_z: "aggregate_observed_daily_mean_against_aggregate_random_mean"        # unspecified in manuscript
+      reported_statistics:
+        - "mu"
+        - "sigma"
+        - "mu_rnd"
+        - "sigma_rnd"
+        - "z"
+
+  # ----------------------------------------------------------------------------
+  # COLORED MOTIF ANALYSIS
+  # ----------------------------------------------------------------------------
+  colored_motif_analysis:
+    enabled: true
+    color_partitions:
+      - "2_class"
+      - "4_class"
+      - "7_class"
+    two_class_partition: "Commodity_vs_Equity"
+    four_class_partition: "Agriculture_Energy_Metals_Equity"
+    seven_class_partition: "full_sector_taxonomy"
+    color_labels_fixed_over_time: true
+    classification_rule: "motif_topology_plus_node_color_composition"
+    collapse_automorphism_equivalent_colorings: true    # unspecified in manuscript
+    null_model_preserves_node_colors: true
+    null_model_randomizes_edges_only: true
+    reported_statistics:
+      - "mu"
+      - "sigma"
+      - "mu_rnd"
+      - "sigma_rnd"
+      - "z"
+
+  # ----------------------------------------------------------------------------
+  # ORBIT POSITION AND STRUCTURAL ROLE ANALYSIS
+  # ----------------------------------------------------------------------------
+  orbit_position_analysis:
+    input_graph: "binary_backbone_adjacency"
+    n_orbit_positions: 30
+    orbit_count_object: "n_ij_t"
+    orbit_probability_vector: "p_i_t"
+    probability_normalization: "divide_by_total_orbit_count_for_asset_i_on_day_t"
+    zero_total_orbit_count_policy: "set_probability_vector_to_all_zeros_and_flag_asset_day"  # unspecified in manuscript
+    zero_probability_entropy_convention: "0_log_0_equals_0"
+    entropy_metric: "Shannon_entropy"
+    entropy_normalization: "none"                                                            # unspecified in manuscript
+    compute_for_thresholds:
+      - 0.05
+      - 0.10
+    compute_for_quantiles:
+      - 0.05
+      - 0.50
+      - 0.95
+    correlation_targets:
+      - "TO"
+      - "FROM"
+      - "NET"
+    cross_sectional_correlation_method: "Pearson"                                           # unspecified in manuscript
+    correlation_frequency: "daily"
+
+  # ----------------------------------------------------------------------------
+  # STRUCTURAL SIMILARITY MATRIX
+  # ----------------------------------------------------------------------------
+  structural_similarity:
+    matrix_name: "H_t"
+    input_vectors: "30_dimensional_orbit_probability_vectors_p_i_t"
+    similarity_measure: "Pearson_correlation"          # unspecified in manuscript; implied by correlation language
+    diagonal_value: 1.0
+    constant_vector_policy: "set_pairwise_similarity_to_zero_and_flag"   # unspecified in manuscript
+    negative_similarity_policy: "retain_negative_values"                 # unspecified in manuscript
+    positive_definiteness_check: true
+    regularization_if_singular: "ridge_epsilon_added_to_diagonal"        # unspecified in manuscript
+    ridge_epsilon: 1.0e-6                                                 # unspecified in manuscript
+    matrix_used_for_MSP: true
+
+  # ----------------------------------------------------------------------------
+  # PORTFOLIO ENGINEERING
+  # ----------------------------------------------------------------------------
+  portfolio_engineering:
+
+    strategies:
+      MVP: "Minimum_Variance_Portfolio"
+      MCP: "Minimum_Correlation_Portfolio"
+      MCoP: "Minimum_Connectedness_Portfolio"
+      MSP: "Minimum_Structural_Similarity_Portfolio"
+
+    input_matrices:
+      MVP: "Sigma_t"
+      MCP: "R_t"
+      MCoP: "PCI_t"
+      MSP: "H_t"
+
+    allocation_formula: "X_inverse_ones_divided_by_ones_prime_X_inverse_ones"
+    full_investment_constraint: "weights_sum_to_one"
+    short_selling_allowed: true                                                # unspecified in manuscript; formula implies unconstrained weights
+    long_only_constraint: false                                                # unspecified in manuscript
+    weight_caps: null                                                          # unspecified in manuscript
+    matrix_inverse_method: "solve_linear_system_not_explicit_inverse"         # implementation convention; unspecified in manuscript
+    regularization_for_singular_inputs: "ridge_epsilon_added_to_diagonal"     # unspecified in manuscript
+    rebalancing_frequency: "daily"
+    return_realization: "next_day_portfolio_return"
+    transaction_costs: 0.0                                                     # unspecified in manuscript
+    risk_free_rate: 0.0                                                        # unspecified in manuscript
+    annualize_sharpe: false                                                    # unspecified in manuscript
+    cvar_confidence_level: 0.95                                                # unspecified in manuscript
+    performance_benchmarks:
+      - "Terminal_Return"
+      - "Standard_Deviation"
+      - "Sharpe_Ratio_StdDev"
+      - "Sharpe_Ratio_CVaR"
+      - "Cumulative_Return"
+
+    msp_variants:
+      MSP1:
+        backbone_alpha: 0.05
+      MSP2:
+        backbone_alpha: 0.10
+
+    sector_exposure_analysis:
+      coarse_grouping: "Commodity_vs_Equity"
+      detailed_grouping: "seven_class_sector_taxonomy"
+      weight_aggregation_rule: "sum_asset_weights_within_group"
+
+  # ----------------------------------------------------------------------------
+  # ROBUSTNESS CHECKS
+  # ----------------------------------------------------------------------------
+  robustness_checks:
+    traditional_QVAR_w_200: true
+    extended_joint_QVAR_w_200: true
+    extended_joint_QVAR_w_250: true
+    comparison_metric: "time_varying_TCI"
+    expected_assessment: "qualitative_consistency_of_turning_points"
+
+  # ----------------------------------------------------------------------------
+  # VISUALIZATION SETTINGS
+  # ----------------------------------------------------------------------------
+  visualization_settings:
+
+    heatmap_markers:
+      Yellow_Triangles: "largest_incoming_within_sector"
+      Purple_Circles: "largest_outgoing_within_sector"
+
+    network_graph_scaling:
+      Node_Size: "absolute_or_signed_net_total_connectedness"    # unspecified in manuscript
+      Edge_Thickness: "pairwise_spillover_strength"
+      Color_Ring: "orange_transmitter_blue_receiver"
+
+    network_layout:
+      layout_algorithm: "force_directed"    # unspecified in manuscript
+      random_seed: 12345                    # unspecified in manuscript
+
+    position_profiles:
+      Color_Scale: "log10_average_orbit_probability"
+      zero_probability_log_policy: "replace_zero_with_small_epsilon_before_log"    # unspecified in manuscript
+      epsilon: 1.0e-12                                                              # unspecified in manuscript
+      Grouping: "dashed_boxes_for_predefined_sectors"
+
+    structural_similarity_heatmap:
+      matrix: "time_average_H_t"
+      sector_blocks: true
+      color_scale_center: 0.0    # unspecified in manuscript
+
+  # ----------------------------------------------------------------------------
+  # REPRODUCIBILITY AND AUDIT CONTROLS
+  # ----------------------------------------------------------------------------
+  reproducibility_controls:
+    global_random_seed: 12345    # unspecified in manuscript
+    store_intermediate_outputs: true
+    store_outputs:
+      - "aligned_returns_matrix"
+      - "diagnostic_table"
+      - "qvar_coefficients"
+      - "innovation_covariances"
+      - "Psi_matrices"
+      - "gSOV"
+      - "gSOT"
+      - "jSOT"
+      - "CT_t_tau"
+      - "TO_FROM_NET"
+      - "TCI_series"
+      - "backbone_matrices"
+      - "motif_counts"
+      - "random_motif_counts"
+      - "colored_motif_counts"
+      - "orbit_count_vectors"
+      - "orbit_probability_vectors"
+      - "entropy_scores"
+      - "H_t_matrices"
+      - "portfolio_weights"
+      - "portfolio_returns"
+
+    llm_use:
+      allowed: false
+      role: "documentation_and_traceability_audit_only"
+      temperature: 0
+      numerical_estimation_allowed: false
+      data_imputation_allowed: false
+      parameter_selection_after_results_allowed: false
+
+    # Multi-line audit prompt template; preserved verbatim from source config.
+    llm_audit_prompt_template: |
+      You are auditing a quantitative finance replication.
+      Given stored intermediate outputs, verify whether each reported table and figure
+      can be traced to a named input matrix, equation, and transformation step.
+      Do not infer missing values. Do not fabricate parameters.
+      Return only passed checks, failed checks, missing artifacts, and required corrective actions.
