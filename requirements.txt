@@ -4,8 +4,8 @@
 # ==============================================================================
 #
 # Paper:   "A Motif-Based Framework for Decomposing Risk Spillovers"
-#          Ying-Hui Shao, Yan-Hong Yang, Yun Zhang (arXiv:2604.25406, 2026)
-# Author:  CS Chirinda
+# Authors:      Ying-Hui Shao, Yan-Hong Yang, Yun Zhang (arXiv:2604.25406, 2026)
+# Replication Repository Author:  CS Chirinda
 # License: MIT
 # Version: 1.0.0
 #
