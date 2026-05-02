@@ -96,7 +96,7 @@ $$ \omega_{S,t} = \frac{H_t^{-1} \mathbf{1}}{\mathbf{1}' H_t^{-1} \mathbf{1}} $$
 Below is a diagram which summarizes the proposed approach:
 
 <div align="center">
-  <img src="https://github.com/chirindaopensource/framework_for_decomposing_risk_spillover/blob/main/framework_for_decomposing_risk_spillover_ipo_main.png" alt="Mesoscopic Risk Framework Architecture" width="100%">
+  <img src="https://github.com/chirindaopensource/framework_for_decomposing_risk_spillover/blob/main/framework_for_decomposing_risk_spillover_ipo_main_six.png" alt="Mesoscopic Risk Framework Architecture" width="100%">
 </div>
 
 ## Features
